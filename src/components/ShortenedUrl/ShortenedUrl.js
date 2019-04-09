@@ -1,17 +1,17 @@
 import React from 'react';
 
-const ShortenedUrl = ({showShortenedUrl, shortenedUrl}) => {
+const ShortenedUrl = ({showShortenedUrl, shortenedUrl, url}) => {
   if(showShortenedUrl){
     return (
-    <div className = 'ma'>
-      <div classnae = 'absolute mt2'>
-        Shortened Url is -> {` `}
-        <a href = {shortenedUrl}>
-          {shortenedUrl}
-        </a>
+      <div className = 'center ma'>
+        <div className = 'absolute mt2'>
+          Shortened Url is -> {` `}
+          <a href = {url} target ='_blank' rel='noopener noreferrer'>
+            {shortenedUrl}
+          </a>
+        </div>
       </div>
-    </div>
-  );
+    );
   } else{
     return (
       <div>
