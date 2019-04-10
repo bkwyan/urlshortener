@@ -2,6 +2,17 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const hash = require('hash.js');
+const knex = require('knex')
+
+const db = knex({
+  client: 'pg',
+  connection:{
+    host: '127.0.0.1',
+    user: 'postgres',
+    password: 'test',
+    database: 'url-shortener'
+  }
+});
 
 const app = express();
 app.use(bodyParser.json());
@@ -39,15 +50,22 @@ app.get('/', (req, res) => {
   res.send(database.links);
 })
 
-app.post('/newurl', (req,res) => {
+app.put('/url', (req,res) => {
   const { url } = req.body;
-  database.links.push({
-    url: url,
-    id: '125',
-    shortenedurl: 'https://demoapp.com/' + hash.sha256().update(url).digest('hex').slice(-7),
-    entries: 0
+  db('links').where('url', '=', url)
+  .returning('*')
+  .then(link => {
+    if(link.length){
+      db('links').where('url', '=', url)
+        .increment('entries', 1)
+    } else {
+      db('links').insert({
+        url: url,
+        shortenedurl: 'https://demoapp.com/' + hash.sha256().update(url).digest('hex').slice(-7)
+      })
+    }
+    res.json(link[0])
   })
-  res.json(database.links[database.links.length-1]);
 })
 
 app.get('/url', (req, res) => {
