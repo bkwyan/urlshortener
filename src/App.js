@@ -23,13 +23,14 @@ class App extends Component {
     this.state = {
       url: '',
       shortenedUrl: '',
+      hash: '',
       showShortenedUrl: false,
       id: '',
     }
   }
 
   componentDidMount()  {
-  fetch('http://localhost:3000')
+  fetch('http://localhost:3000/')
     .then(response => response.json())
     .then(console.log)
   }
@@ -39,8 +40,8 @@ class App extends Component {
   }
 
   onButtonSubmit = () => {
-    fetch('http://localhost:3000/url', {
-      method: 'put',
+    fetch('http://localhost:3000/newurl', {
+      method: 'post',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
         url: this.state.url
@@ -49,8 +50,8 @@ class App extends Component {
     .then(response => response.json())
     .then(data => {
       if(data){
+        this.setState({hash: data.hash});
         this.setState({shortenedUrl: data.shortenedurl});
-        this.setState({id: data.id});
         this.setState({showShortenedUrl: true});
       }
     })
@@ -68,9 +69,9 @@ class App extends Component {
           onButtonSubmit = {this.onButtonSubmit}
         />
         <ShortenedUrl
+          hash = {this.state.hash}
           shortenedUrl = {this.state.shortenedUrl}
           showShortenedUrl = {this.state.showShortenedUrl}
-          url = {this.state.url}
         />
       </div>
     );
