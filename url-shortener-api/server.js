@@ -27,50 +27,34 @@ app.use(function (req, res, next) {
   next();
 });
 
-/*
-string.slice(-7) ---> takes last 7 characters
-*/
-
-const database = {
-  links: [
-    {
-      url: 'https://www.amazon.ca/Xbox-One-Wireless-Controller-Black/dp/B01LPZM7VI?pd_rd_wg=1AOCi&pd_rd_r=b39874cf-55c4-446c-8d9b-e78c7689d1d7&pd_rd_w=JCDfK&ref_=pd_gw_ri&pf_rd_r=MTKNPJAKFYGYQ7XE5JWJ&pf_rd_p=2d673723-457b-555b-bfac-09c1f97708f0',
-      hash: 'ABC',
-      shortenedurl: 'https://www.amazon.ca/Xbox-One-Wireless-Controller-Black/dp/ABC',
-      entries: 0
-    },
-    {
-      url: 'https://www.amazon.ca/All-new-Echo-Dot-3rd-gen/dp/B0792JYXZK/ref=lp_667823011_1_8?s=electronics&ie=UTF8&qid=1554780559&sr=1-8',
-      hash: 'EFG',
-      shortenedurl: 'https://www.amazon.ca/All-new-Echo-Dot-3rd-gen/dp/EFG',
-      entries: 0
-    }
-  ]
-}
-
-app.get('/', (req, res) => {
-  res.send(database.links);
-})
-
 app.post('/newurl', (req,res) => {
   const { url } = req.body;
-  database.links.push({
-    url: url,
-    hash: hash.sha256().update(url).digest('hex').slice(-7),
-    shortenedurl: 'localhost:3001/' + hash.sha256().update(url).digest('hex').slice(-7)
-  })
-  res.json(database.links[database.links.length-1]);
+  const urlHash = hash.sha256().update(url).digest('hex').slice(-7)
+  db.select('*').from('links').where({url})
+    .then( link => {
+      if(link.length){
+        res.json(link[0])
+      } else{
+        db('links')
+          .returning('*')
+          .insert({
+            url: url,
+            hash: urlHash,
+            shortenedurl: 'localhost:3000/' + urlHash
+          })
+          .then(response => {
+            res.json(response[0])
+          })
+      }
+    })
 })
 
 app.get('/:hash', (req, res) => {
   const { hash } = req.params;
-  let found = false;
-  database.links.forEach(link =>{
-    if(link.hash === hash){
-      found = true;
-      res.redirect(link.url)
-    }
-  })
+  db.select('url').from('links').where('hash', '=', hash)
+    .then(url => {
+      res.redirect(url[0].url)
+    })
 })
 
 app.listen(3000, () => {
