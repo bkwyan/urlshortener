@@ -71,7 +71,6 @@ app.get('/:hash', (req, res) => {
       res.redirect(link.url)
     }
   })
-  .catch(err => res.status(400).json('error getting link'))
 })
 
 app.listen(3000, () => {
