@@ -23,7 +23,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.use(function (req, res, next) {
-  res.setHeader('Access-Contrl-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, PUT, DELETE, GET, OPTIONS');
   res.setHeader('Access-Control-Request-Method', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
