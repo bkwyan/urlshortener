@@ -1,5 +1,8 @@
 UrlShortener
 
+Frontend: React
+Backend: Express.js, Node.js, PostgreSQL
+
 1. Clone this repo
 2. Run npm install
 3. Run npm start in url-shortener-api directory
