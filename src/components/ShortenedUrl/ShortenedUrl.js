@@ -11,7 +11,7 @@ class ShortenedUrl extends React.Component{
 
   onClickedUrl = () => {
     fetch('http://localhost:3000/' + this.props.hash)
-      .then(response => console.log(response));
+      .then(response => response.json());
   }
 
   render(){

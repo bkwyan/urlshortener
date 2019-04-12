@@ -4,6 +4,9 @@ const cors = require('cors');
 const hash = require('hash.js');
 const knex = require('knex')
 
+const inputUrl = require('./controllers/inputUrl');
+const shortenedUrl = require('./controllers/shortenedUrl')
+
 const db = knex({
   client: 'pg',
   connection:{
@@ -27,35 +30,9 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.post('/newurl', (req,res) => {
-  const { url } = req.body;
-  const urlHash = hash.sha256().update(url).digest('hex').slice(-7)
-  db.select('*').from('links').where({url})
-    .then( link => {
-      if(link.length){
-        res.json(link[0])
-      } else{
-        db('links')
-          .returning('*')
-          .insert({
-            url: url,
-            hash: urlHash,
-            shortenedurl: 'localhost:3000/' + urlHash
-          })
-          .then(response => {
-            res.json(response[0])
-          })
-      }
-    })
-})
+app.post('/newurl', (req,res) => {inputUrl.handleInputUrl(req, res, db, hash)})
 
-app.get('/:hash', (req, res) => {
-  const { hash } = req.params;
-  db.select('url').from('links').where('hash', '=', hash)
-    .then(url => {
-      res.redirect(url[0].url)
-    })
-})
+app.get('/:hash', (req, res) => {shortenedUrl.handleShortenedUrl(req, res, db)})
 
 app.listen(3000, () => {
   console.log('app is running on port 3000');

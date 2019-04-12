@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Particles from 'react-particles-js';
 import ShortenedUrl from './components/ShortenedUrl/ShortenedUrl';
-import Rank from './components/Rank/Rank';
 import UrlForm from './components/UrlForm/UrlForm';
 import './App.css';
 
@@ -25,14 +24,8 @@ class App extends Component {
       shortenedUrl: '',
       hash: '',
       showShortenedUrl: false,
-      id: '',
     }
   }
-
-  // componentDidMount()  {
-  // fetch('http://localhost:3000/')
-  //   .then(response => console.log(response))
-  // }
 
   onInputChange = (event) => {
     this.setState({url: event.target.value})
@@ -62,7 +55,6 @@ class App extends Component {
         <Particles className='particles'
           params={particlesOptions}
         />
-        <Rank />
         <UrlForm 
           onInputChange = {this.onInputChange}
           onButtonSubmit = {this.onButtonSubmit}

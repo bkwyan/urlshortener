@@ -3,7 +3,7 @@ import React from 'react';
 const UrlForm = ({onInputChange, onButtonSubmit}) => {
   return (
     <div>
-      <p className='f3'>
+      <p className='f3 mv6'>
         {'Please enter the URL you wish to shorten.'}
       </p>
       <div className = 'center'>
